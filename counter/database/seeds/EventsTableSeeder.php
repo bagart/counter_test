@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-
+use App\Models\Event;
 class EventsTableSeeder extends Seeder
 {
     /**
@@ -11,17 +11,18 @@ class EventsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('events')->insert([
+        (new Event)->updateOrCreate([
             'id' => 1,
             'name' => 'view',
         ]);
 
-        DB::table('events')->insert([
+
+        (new Event)->updateOrCreate([
             'id' => 2,
             'name' => 'play',
         ]);
 
-        DB::table('events')->insert([
+        (new Event)->updateOrCreate([
             'id' => 3,
             'name' => 'click',
         ]);

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-
+use App\Models\Country;
 class CountriesTableSeeder extends Seeder
 {
     /**
@@ -11,17 +11,17 @@ class CountriesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('countries')->insert([
+        (new Country)->updateOrCreate([
             'id' => 1,
             'name' => 'Us',
         ]);
 
-        DB::table('countries')->insert([
+        (new Country)->updateOrCreate([
             'id' => 2,
             'name' => 'CA',
         ]);
 
-        DB::table('countries')->insert([
+        (new Country)->updateOrCreate([
             'id' => 3,
             'name' => 'Ru',
         ]);

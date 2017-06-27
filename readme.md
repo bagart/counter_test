@@ -33,3 +33,21 @@ over the last 7?
 
 > for the top 5 countries
 for the top 5 countries for curent period
+
+
+
+# Install
+```
+git clone https://github.com/Laradock/laradock.git
+cd laradock
+cp env-example .env
+sed -i -e 's/^.*APPLICATION\=.*/APPLICATION=..\/counter/' .env
+docker-compose up -d nginx mysql
+
+docker exec -it laradock_workspace_1 bash
+#inside container:
+
+composer install
+./artisan migrate --seed
+```
+
