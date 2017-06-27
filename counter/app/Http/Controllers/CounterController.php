@@ -23,7 +23,7 @@ class CounterController extends Controller
         }
     }
 
-    public function exportCsv($counters)
+    private function exportCsv($counters)
     {
         $headers = array(
             "Content-type" => "text/csv",
