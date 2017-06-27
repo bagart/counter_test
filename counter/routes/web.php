@@ -14,3 +14,8 @@
 $app->get('/', function () use ($app) {
     return $app->version();
 });
+
+
+
+$app->get('/counter', 'CounterController@get');
+$app->post('/counter', 'CounterController@inc');
