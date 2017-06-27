@@ -40,17 +40,27 @@ for the top 5 countries for curent period
 ```
 git clone https://github.com/bagart/counter_test.git
 cd counter_test
+cp .env.example .env
+
 git clone https://github.com/Laradock/laradock.git
 cd laradock
 cp env-example .env
 sed -i -e 's/^.*APPLICATION\=.*/APPLICATION=..\/counter/' .env
+
+#run docker images. php and workspace in autostart
 docker-compose up -d nginx mysql
 
+#connect to prepared workspace
 docker exec -it laradock_workspace_1 bash
-#inside container:
+#next command run inside container:
 
+#install Laravel App
 composer install
+
+#prepare Database
 ./artisan migrate --seed
+
+#check 
 phpunit
 ```
 
