@@ -48,17 +48,8 @@ class CountryRepositoryTest extends TestCase
      */
     public function testNotExistsGetOrCreateIdByName()
     {
-        $i = 0;
-        $notExistsCountry = null;
-        while (!$notExistsCountry && $i++ < 10) {
-            $notExistsCountry = 'unique_val_' . Faker\Factory::create()->numberBetween();
-            $element = $this->model->where('name', $notExistsCountry)->first();
-            if ($element) {
-                $notExistsCountry = null;
-            }
-        }
+        $notExistsCountry = $this->getNewCountryName();
         if (!$notExistsCountry) {
-            $this->assertTrue(false, 'test internal error');
             return;
         }
 

@@ -15,8 +15,8 @@ class CreateCounterTable extends Migration
     {
         Schema::create('counters', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('counter');
-            $table->date('date')->index();
+            $table->integer('counter')->default(0);
+            $date = $table->date('date')->index();
 
             $table->integer('country_id')->unsigned();
             $table->foreign('country_id')->references('id')->on('countries');
@@ -24,7 +24,7 @@ class CreateCounterTable extends Migration
             $table->integer('event_id')->unsigned();
             $table->foreign('event_id')->references('id')->on('events');
 
-            $table->index(['country_id', 'event_id', 'date'])->unique();
+            $table->unique(['country_id', 'event_id', 'date']);
 
         });
     }

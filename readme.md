@@ -23,8 +23,6 @@ according to the request parameters. The response should contain the sum of each
 over the past 7 days by country for the top 5 countries.
 
 
-
-
 ------------------
 # Notice
 > application with millions of users.
@@ -35,8 +33,3 @@ over the last 7?
 
 > for the top 5 countries
 for the top 5 countries for curent period
-
-1. 
-The backend needs to decode this data and extract the "country" and "event" fields.
-Then the backend needs to increment a counter in the database for the current day
-for the respective country and event.

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     protected $fillable = ['name'];
+    public $timestamps = false;
 
     //cache
     protected $mapIdByName = [
@@ -14,6 +15,7 @@ class Event extends Model
         'play' => 2,
         'click' => 3,
     ];
+
 
     public function getAllIdByName()
     {
