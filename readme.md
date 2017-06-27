@@ -38,6 +38,8 @@ for the top 5 countries for curent period
 
 # Install
 ```
+git clone https://github.com/bagart/counter_test.git
+cd counter_test
 git clone https://github.com/Laradock/laradock.git
 cd laradock
 cp env-example .env
@@ -49,5 +51,6 @@ docker exec -it laradock_workspace_1 bash
 
 composer install
 ./artisan migrate --seed
+phpunit
 ```
 
