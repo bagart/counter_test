@@ -10,6 +10,7 @@ E.g.
 2017-07-01 US plays 100
 2017-07-02 US views 3000
 2017-07-01 CA clicks 123
+...
 ```
 
 1. Receive data from application. The data is sent by POST. The data is formatted in json.
