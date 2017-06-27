@@ -64,3 +64,10 @@ composer install
 phpunit
 ```
 
+
+#show
+Envirement: Laradock
+https://youtu.be/LhJxdObGr6k
+
+Development: PHP Application
+https://youtu.be/d5hqrOKtjfw
