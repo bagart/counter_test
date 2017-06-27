@@ -1,8 +1,12 @@
 # Task
 Imagine that you have an application with millions of users. Performance is key.
+
 You need to create a backend for it which will handle the following two requests.
+
 The backend has a database which keeps counters for each day, country and event.
+
 Event can be any of "view", "play" or "click"
+
 E.g.
 
 ```
@@ -26,12 +30,15 @@ over the past 7 days by country for the top 5 countries.
 ------------------
 # Notice
 > application with millions of users.
+
 I use Lavavel for simple and quick example
 
 > over the past 7
+
 over the last 7?
 
 > for the top 5 countries
+
 for the top 5 countries for curent period
 
 
@@ -66,8 +73,11 @@ phpunit
 
 
 #show
+
 Envirement: Laradock
+
 https://youtu.be/LhJxdObGr6k
 
 Development: PHP Application
+
 https://youtu.be/d5hqrOKtjfw
