@@ -19,3 +19,4 @@ $app->get('/', function () use ($app) {
 
 $app->get('/counter', 'CounterController@get');
 $app->post('/counter', 'CounterController@inc');
+$app->post('/counter_async', 'CounterController@incAsync');

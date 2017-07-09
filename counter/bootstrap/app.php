@@ -82,6 +82,13 @@ $app->singleton(
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
+//$app->register(    Pvm\ArtisanBeans\ArtisanBeansServiceProvider::class);
+$app->register(    Illuminate\Redis\RedisServiceProvider::class);
+
+$app->configure('database');
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

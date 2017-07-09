@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 
+use App\Jobs\CounterIncJob;
 use App\Models\Counter;
 use App\Models\Country;
 use App\Models\Event;
@@ -44,8 +45,14 @@ class CounterRepository
             ->where('date', $date)
             ->select(\DB::raw('SUM(counter) as counter'))
             ->first();
-        return $result->counter ?? 0;
 
+        return $result->counter ?? 0;
+    }
+
+
+    public function incAsync($country, $event, $step = 1)
+    {
+        dispatch(new CounterIncJob($country, $event, $step));
     }
 
     public function inc($country, $event, $step = 1)
@@ -99,30 +106,34 @@ class CounterRepository
             'limit_country' => $countryLimit
         ];
 
-        return \Cache::remember(__METHOD__ . serialize($params), 1, function () use ($params) {
-            return \DB::select('
-            SELECT
-              countries.name country,
-              events.name event,
-              sum(counter) counter
-            FROM counters
-              JOIN (
-                     SELECT country_id
-                     FROM counters
-                     WHERE DATE BETWEEN :date_from_country AND :date_to_country
-                     GROUP BY country_id
-                     ORDER BY sum(counter) DESC
-                     LIMIT :limit_country
-                   ) AS top_country ON counters.country_id = top_country.country_id
-              JOIN countries ON countries.id = counters.country_id
-              JOIN events ON events.id = counters.event_id
-            WHERE DATE BETWEEN :date_from AND :date_to
-            GROUP BY countries.name, events.name
-            HAVING sum(counter) > 0
-            ORDER BY sum(counter) DESC
-            ',
-                $params
-            );
-        });
+        return \Cache::remember(
+            __METHOD__ . serialize($params),
+            1,
+            function () use ($params) {
+                return \DB::select('
+                    SELECT
+                      countries.name country,
+                      events.name event,
+                      sum(counter) counter
+                    FROM counters
+                      JOIN (
+                             SELECT country_id
+                             FROM counters
+                             WHERE DATE BETWEEN :date_from_country AND :date_to_country
+                             GROUP BY country_id
+                             ORDER BY sum(counter) DESC
+                             LIMIT :limit_country
+                           ) AS top_country ON counters.country_id = top_country.country_id
+                      JOIN countries ON countries.id = counters.country_id
+                      JOIN events ON events.id = counters.event_id
+                    WHERE DATE BETWEEN :date_from AND :date_to
+                    GROUP BY countries.name, events.name
+                    HAVING sum(counter) > 0
+                    ORDER BY sum(counter) DESC
+                    ',
+                    $params
+                );
+            }
+        );
     }
 }

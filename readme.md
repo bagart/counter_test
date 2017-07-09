@@ -42,7 +42,6 @@ over the last 7?
 for the top 5 countries for curent period
 
 
-
 # Install
 ```
 git clone https://github.com/bagart/counter_test.git
@@ -54,8 +53,8 @@ cd laradock
 cp env-example .env
 sed -i -e 's/^.*APPLICATION\=.*/APPLICATION=..\/counter/' .env
 
-#run docker images. php and workspace in autostart
-docker-compose up -d nginx mysql beanstalkd
+#run docker images
+docker-compose up -d nginx mysql redis php-worker
 
 #connect to prepared workspace
 docker exec -it laradock_workspace_1 bash
@@ -69,6 +68,11 @@ composer install
 
 #check 
 phpunit
+
+
+
+#for complete queued inc (supervoisord)
+php artisan queue:work
 ```
 
 

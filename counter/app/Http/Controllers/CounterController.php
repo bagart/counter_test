@@ -47,6 +47,18 @@ class CounterController extends Controller
         return StreamedResponse::create($callback, 200, $headers);
     }
 
+    public function incAsync(Request $request)
+    {
+        (new CounterRepository())
+            ->incAsync(
+                $request->get('country'),
+                $request->get('event')
+            );
+
+        return response()->json([
+            'result' => true,
+        ]);
+    }
     public function inc(Request $request)
     {
         (new CounterRepository())
