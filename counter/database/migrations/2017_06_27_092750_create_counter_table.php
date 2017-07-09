@@ -25,7 +25,7 @@ class CreateCounterTable extends Migration
             $table->foreign('event_id')->references('id')->on('events');
 
             $table->unique(['country_id', 'event_id', 'date']);
-            $table->index(['country_id', 'date']);
+            //$table->index(['country_id', 'date']);
 
         });
     }

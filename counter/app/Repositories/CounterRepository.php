@@ -98,7 +98,7 @@ class CounterRepository
               sum(counter) counter
             FROM counters
               JOIN (
-                  SELECT country_id
+                     SELECT country_id
                      FROM counters
                      WHERE DATE BETWEEN :date_from_country AND :date_to_country
                      GROUP BY country_id
@@ -109,6 +109,7 @@ class CounterRepository
               JOIN events ON events.id = counters.event_id
             WHERE DATE BETWEEN :date_from AND :date_to
             GROUP BY countries.name, events.name
+            HAVING sum(counter) > 0
             ORDER BY sum(counter) DESC
             ',
             [

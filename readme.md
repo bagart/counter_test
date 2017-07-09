@@ -55,7 +55,7 @@ cp env-example .env
 sed -i -e 's/^.*APPLICATION\=.*/APPLICATION=..\/counter/' .env
 
 #run docker images. php and workspace in autostart
-docker-compose up -d nginx mysql
+docker-compose up -d nginx mysql beanstalkd
 
 #connect to prepared workspace
 docker exec -it laradock_workspace_1 bash
