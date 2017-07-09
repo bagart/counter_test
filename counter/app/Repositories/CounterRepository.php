@@ -91,7 +91,16 @@ class CounterRepository
         $period = '7 days',
         $countryLimit = 5
     ) {
-        return \DB::select('
+        $params = [
+            'date_from_country' => date('Y-m-d', strtotime('now - ' . $period)),
+            'date_to_country' => date('Y-m-d', strtotime('tomorrow')),
+            'date_from' => date('Y-m-d', strtotime('now - ' . $period)),
+            'date_to' => date('Y-m-d', strtotime('tomorrow')),
+            'limit_country' => $countryLimit
+        ];
+
+        return \Cache::remember(__METHOD__ . serialize($params), 1, function () use ($params) {
+            return \DB::select('
             SELECT
               countries.name country,
               events.name event,
@@ -112,14 +121,8 @@ class CounterRepository
             HAVING sum(counter) > 0
             ORDER BY sum(counter) DESC
             ',
-            [
-                'date_from_country' => date('Y-m-d', strtotime('now - ' . $period)),
-                'date_to_country' => date('Y-m-d', strtotime('tomorrow')),
-                'date_from' => date('Y-m-d', strtotime('now - ' . $period)),
-                'date_to' => date('Y-m-d', strtotime('tomorrow')),
-                'limit_country' => $countryLimit
-            ]
-        );
-
+                $params
+            );
+        });
     }
 }
