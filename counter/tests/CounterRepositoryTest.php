@@ -21,58 +21,6 @@ class CounterRepositoryTest extends TestCase
         $this->model = App(Counter::class);
     }
 
-    public function testIncDec()
-    {
-        $counter = null;
-        try {
-            $counter = $this->model
-                ->create([
-                    'event_id' => 1,
-                    'country_id' => 1,
-                    'date' => date('Y-m-d'),
-                ]);
-        } catch (\Illuminate\Database\QueryException $e) {
-            if (23000 != $e->getCode()) {
-                throw $e;
-            }
-            $counter = $this->model
-                ->where('event_id', 1)
-                ->where('country_id', 1)
-                ->where('date', date('Y-m-d'))
-                ->first();
-        }
-
-        $this->counterRepository->inc(
-            $counter->country()->first()->name,
-            $counter->event()->first()->name,
-            1
-        );
-        $this->assertEquals(
-            $counter->counter + 1,
-            $this->model->find($counter->id)->counter
-        );
-
-        $this->counterRepository->inc(
-            $counter->country()->first()->name,
-            $counter->event()->first()->name,
-            5
-        );
-        $this->assertEquals(
-            $counter->counter + 1 + 5,
-            $this->model->find($counter->id)->counter
-        );
-
-        $this->counterRepository->inc(
-            $counter->country()->first()->name,
-            $counter->event()->first()->name,
-            -1 - 5
-        );
-        $this->assertEquals(
-            $counter->counter,
-            $this->model->find($counter->id)->counter
-        );
-    }
-
     public function testGetLastTopEventSumByCountry()
     {
         $check = [];

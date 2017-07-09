@@ -2,12 +2,15 @@
 
 namespace App\Repositories;
 
+
 use App\Models\Counter;
-use Illuminate\Database\QueryException;
+use App\Models\Country;
+use App\Models\Event;
 
 class CounterRepository
 {
     protected $target = Counter::class;
+    protected $slot = 50;
 
     /**
      * @return Counter;
@@ -17,40 +20,69 @@ class CounterRepository
         return App($this->target);
     }
 
+    public function current($country, $event, $date = null)
+    {
+        if (is_string($country) && mb_strlen($country)) {
+            $country = (new CountryRepository())
+                ->getOrCreateByName($country);
+        } elseif (!$country instanceof Country) {
+            throw new \InvalidArgumentException('invalid params country:' . $country);
+        }
+
+        if (is_string($event) && mb_strlen($event)) {
+            $event = (new EventRepository())
+                ->getByName($event);
+        } elseif (!$event instanceof Event) {
+            throw new \InvalidArgumentException('invalid params event:' . $event);
+        }
+
+        $date = $date ?? date('Y-m-d');
+
+        $result = $this->getModel()
+            ->where('country_id', $country->id)
+            ->where('event_id', $event->id)
+            ->where('date', $date)
+            ->select(\DB::raw('SUM(counter) as counter'))
+            ->first();
+        return $result->counter ?? 0;
+
+    }
+
     public function inc($country, $event, $step = 1)
     {
-        if (
-            !is_string($country)
-            || !mb_strlen($country)
-            || !is_string($event)
-            || !mb_strlen($event)
-        ) {
-            throw new \InvalidArgumentException('invalid params');
+        if (is_string($country) && mb_strlen($country)) {
+            $country = (new CountryRepository())
+                ->getOrCreateByName($country);
+        } elseif (!$country instanceof Country) {
+            throw new \InvalidArgumentException('invalid params country:' . $country);
         }
-        $event_id = (new EventRepository())
-            ->getIdByName($event);
-        $country_id = (new CountryRepository())
-            ->getOrCreateIdByName($country);
+
+        if (is_string($event) && mb_strlen($event)) {
+            $event = (new EventRepository())
+                ->getByName($event);
+        } elseif (!$event instanceof Event) {
+            throw new \InvalidArgumentException('invalid params event:' . $event);
+        }
+
         $date = date('Y-m-d');
 
-        try {
-            $this->getModel()
-                ->create([
-                    'event_id' => $event_id,
-                    'country_id' => $country_id,
-                    'date' => $date,
-                ]);
-        } catch (QueryException $e) {
-            if (23000 != $e->getCode()) {
-                throw $e;
-            }
-        }
-
-        \DB::table($this->getModel()->getTable())
-            ->where('event_id', $event_id)
-            ->where('country_id', $country_id)
-            ->where('date', $date)
-            ->increment('counter', $step);
+        \DB::insert(
+            "
+              INSERT INTO `{$this->getModel()->getTable()}`
+                (event_id, country_id, `date`, slot, counter)
+              VALUES 
+               (:event_id, :country_id, :date, rand() * :slot, :step1)
+              ON DUPLICATE KEY UPDATE counter=counter + :step2
+            ",
+            [
+                'event_id' => $event->id,
+                'country_id' => $country->id,
+                'date' => $date,
+                'step1' => $step,
+                'step2' => $step,
+                'slot' => $this->slot,
+            ]
+        );
 
         return true;
     }

@@ -15,44 +15,50 @@ class ControllerCounterIncTest extends TestCase
         $this->assertArrayHasKey('result', $json);
     }
 
-    public function testExistsCountry()
+    public function testAll()
     {
         $date = date('Y-m-d');
-        $counters = Counter::where('date', $date)->get();
+        $countries = Country::all();
+        $events = Event::all();
 
-        foreach ($counters as $counter) {
-            $country = $counter->country()->first();
-            $event = $counter->event()->first();
+        foreach ($countries as $country) {
+            foreach ($events as $event) {
+                $initVal = (new CounterRepository)
+                    ->current($country->name, $event->name, $date);
 
-            $this->json(
-                'POST',
-                '/counter',
-                [
-                    'country' => $country->name,
-                    'event' => $event->name,
-                ]
-            );
-            $this->checkResponse();
+                (new CounterRepository)->inc(
+                    $country->name,
+                    $event->name
+                );
 
-            $counterTest = Counter::where('event_id', $event->id)
-                ->where('country_id', $country->id)
-                ->where('date', $date)
-                ->first();
+                $incVal = (new CounterRepository)
+                    ->current($country->name, $event->name, $date);
+                $this->assertEquals($initVal + 1, $incVal);
 
-            $this->assertEquals($counterTest->counter, $counter->counter + 1);
+                $this->json(
+                    'POST',
+                    '/counter',
+                    [
+                        'country' => $country->name,
+                        'event' => $event->name,
+                    ]
+                );
 
-            (new CounterRepository)->inc(
-                $country->name,
-                $event->name,
-                -1
-            );
+                $callVal = (new CounterRepository)
+                    ->current($country->name, $event->name, $date);
+                $this->checkResponse();
+                $this->assertEquals($initVal + 2, $callVal);
 
-            $counterTest = Counter::where('event_id', $event->id)
-                ->where('country_id', $country->id)
-                ->where('date', $date)
-                ->first();
+                (new CounterRepository)->inc(
+                    $country->name,
+                    $event->name,
+                    -2
+                );
 
-            $this->assertEquals($counterTest->counter, $counter->counter);
+                $decVal = (new CounterRepository)
+                    ->current($country->name, $event->name, $date);
+                $this->assertEquals($initVal, $decVal);
+            }
         }
     }
 
@@ -88,7 +94,7 @@ class ControllerCounterIncTest extends TestCase
         $this->assertEquals(1, $counter->counter);
         $counter->delete();
         $country->delete();
-        $this->assertEmpty( Counter::where('event_id', $event->id)
+        $this->assertEmpty(Counter::where('event_id', $event->id)
             ->where('country_id', $country->id)
             ->where('date', date('Y-m-d'))
             ->first());
