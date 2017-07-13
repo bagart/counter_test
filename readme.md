@@ -46,7 +46,6 @@ for the top 5 countries for curent period
 ```
 git clone https://github.com/bagart/counter_test.git
 cd counter_test
-cp .env.example .env
 
 git clone https://github.com/Laradock/laradock.git
 cd laradock
