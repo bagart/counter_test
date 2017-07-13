@@ -79,4 +79,3 @@ php artisan queue:work
 
 Envirement: Laradock
 
-https://youtu.be/LhJxdObGr6k
